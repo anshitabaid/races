@@ -3,9 +3,10 @@
     <title> Races </title>
 </head>
 <body>
-    Race and winner <br>
+    Race Player1 Player2 winner <br>
     {% for race in races %}
-    	{{race.uid}} {{race.w}}<br>
+    	{{race.uid}} {{race.p1}} {{race.p2}} {{race.w}}<br>
     {% endfor %}
+    <br><a href="http://localhost:5000/">Home</a> <br>
 </body>
 </html>
