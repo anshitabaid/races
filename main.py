@@ -104,7 +104,7 @@ def currentstandings():
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
 		return render_template ("currentstandings.html", dict = sorted_d)
 
-#index
+#index, runs on localhost:5000
 @app.route ('/')
 def home():
 	return render_template ("index.html")
