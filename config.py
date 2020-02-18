@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, session, redirect, url_for
 import os
+import hashlib
 import operator
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy

@@ -3,10 +3,32 @@
     <title> Races </title>
 </head>
 <body>
-    Race Player1 Player2 winner <br>
+    <form action = "http://localhost:5000/viewraces" method = 'GET'>
+        <b>Filters</b><br>
+        Featuring player(leave blank if optional):&nbsp<input type = "text" name = "player"><br>
+        <input type = "submit" value = "reload">
+
+    </form>
+    <br><br>
+    <table>
+    <TR>
+        <TD class = "c1">Race</TD>
+        <TD class = "c2">Player1</TD>
+        <TD class = "c3">Player2</TD>
+        <TD class = "c4">Winner</TD>
+    </TR>
+    
     {% for race in races %}
-    	{{race.uid}} {{race.p1}} {{race.p2}} {{race.w}}<br>
+    	<TR>
+            <TD class = "c1">{{race.uid}}</TD>
+            <TD class = "c2">{{race.p1}}</TD>
+            <TD class = "c3">{{race.p2}}</TD>
+            <TD class = "c4">{{race.w}}</TD>
+        </TR>
     {% endfor %}
+    </table>
+<br><br>
+    
     <br><a href="http://localhost:5000/">Home</a> <br>
 </body>
 </html>

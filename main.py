@@ -16,7 +16,8 @@ def login():
 def verifylogin ():
 	uname = request.form['username']
 	pword = request.form['password']
-	if pword == "password" and uname=="username":
+	h = hashlib.md5 (pword.encode("utf8")).hexdigest()
+	if uname=="username" and h==ADMIN_PW_HASH:
 		session[LOGIN]=TRUE
 		return redirect (url_for ('add'))
 	else:
@@ -59,23 +60,27 @@ def adminportal():
 		else:
 			return render_template ("addrace.html", msg="Incorrect values, try again")
 	else:
-		return 'not logged in'
+		return render_template ("adminlogin.html", msg = "Please login as admin")
 
 #for everyone to view races, players, winners
 @app.route ('/viewraces/')
 def viewraces():
-	races = Race.query.all()
+	name_filter = request.args ['player']
+	if name_filter == '':
+		races = Race.query.all()
+	else:
+		races = Race.query.filter((Race.p1==name_filter) | (Race.p2==name_filter ))
 	return render_template ("viewraces.html", races=races)
 
-#view current standings in asc/desc order as specified in argument in url
-@app.route ("/computecurrentstandings")
-def computeCurrentstandings():
+#view current standings 
+@app.route ("/currentstandings/")
+def currentstandings():
 	order = request.args['AscOrDesc']
 	name_filter = request.args ['player']
 	if name_filter == "":
 		players = Player.query.all() #details of all players
 	else:
-		players = Player.query.filter_by(name=name_filter)
+		players = Player.query.filter_by(name=name_filter) #details of only required players
 	#create a dict to calculate who won how many races
 	dict={}
 	for p in players:
@@ -83,14 +88,10 @@ def computeCurrentstandings():
 	#sort based on no of games won descending, the no of games won will be value in key-value pair in dict
 	if (order == None) or (order == 'desc'):
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1], reverse=True)}
-		return render_template ("viewstandings.html", dict = sorted_d)
-	else:
+		return render_template ("currentstandings.html", dict = sorted_d)
+	else: #sort based on ascending
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
-		return render_template ("viewstandings.html", dict = sorted_d)
-
-@app.route ("/currentstandings")
-def currentStandings ():
-	return render_template ("currentstandings.html")
+		return render_template ("currentstandings.html", dict = sorted_d)
 
 """
 #view current standings in asc/desc order as specified in argument in url

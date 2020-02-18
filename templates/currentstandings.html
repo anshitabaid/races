@@ -4,7 +4,7 @@
 </head>
 <body>
     <b>Filters</b><br>
-    <form action="http://localhost:5000/computecurrentstandings", method="GET">
+    <form action="http://localhost:5000/currentstandings", method="GET">
         Sort <br>
         <input type="radio" id="desc" name="AscOrDesc" value = "desc" checked>
         <label for="desc">Most wins first</label><br>
@@ -13,8 +13,13 @@
         <br>
         Query a player (leave blank if optional):&nbsp<input type = "text" name = "player"><br>
 
-        <br><input type = "submit">
+        <br><input type = "submit" value = "reload">
     </form>
+    <br><br>
+    No of games won <br>
+    {% for key, value in dict.items() %}
+		{{ key }} : {{ value }} <br>
+	{% endfor %}
     <br><a href="http://localhost:5000/">Home</a> <br>
 </body>
 </html>
