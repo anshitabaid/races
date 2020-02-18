@@ -5,9 +5,9 @@
 <body>
     Enter text here
     <form action="http://localhost:5000/adminportal/" method="post" enctype=multipart/form-data>
-    	Player A <input type = "text" name = "p1"> <br>
-    	Player B <input type = "text" name = "p2"> <br>
-    	Winner	 <input type = "text" name = "w"> <br>
+    	Player A <input type = "text" name = "p1" required> <br>
+    	Player B <input type = "text" name = "p2" required> <br>
+    	Winner	 <input type = "text" name = "w" required> <br>
         <input type = "submit"><br><br>
     </form>
     {{msg}}

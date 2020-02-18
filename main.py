@@ -68,10 +68,14 @@ def viewraces():
 	return render_template ("viewraces.html", races=races)
 
 #view current standings in asc/desc order as specified in argument in url
-@app.route ("/currentstandings")
-def currentstandings():
-	order = request.args['sort']
-	players = Player.query.all() #details of all races
+@app.route ("/computecurrentstandings")
+def computeCurrentstandings():
+	order = request.args['AscOrDesc']
+	name_filter = request.args ['player']
+	if name_filter == "":
+		players = Player.query.all() #details of all players
+	else:
+		players = Player.query.filter_by(name=name_filter)
 	#create a dict to calculate who won how many races
 	dict={}
 	for p in players:
@@ -79,10 +83,14 @@ def currentstandings():
 	#sort based on no of games won descending, the no of games won will be value in key-value pair in dict
 	if (order == None) or (order == 'desc'):
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1], reverse=True)}
-		return render_template ("currentstandings.html", dict = sorted_d)
+		return render_template ("viewstandings.html", dict = sorted_d)
 	else:
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
-		return render_template ("currentstandings.html", dict = sorted_d)
+		return render_template ("viewstandings.html", dict = sorted_d)
+
+@app.route ("/currentstandings")
+def currentStandings ():
+	return render_template ("currentstandings.html")
 
 """
 #view current standings in asc/desc order as specified in argument in url
