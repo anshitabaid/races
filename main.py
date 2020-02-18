@@ -14,8 +14,9 @@ def login():
 #to verify login credentials. As of now, username = username and password = password to login
 @app.route ("/verifylogin/", methods = ['POST'])
 def verifylogin ():
-	uname = request.form['username']
-	pword = request.form['password']
+	#hash input passwords and verify 
+	uname = request.form['username'].split()[0]
+	pword = request.form['password'].split()[0]
 	h = hashlib.md5 (pword.encode("utf8")).hexdigest()
 	if uname=="username" and h==ADMIN_PW_HASH:
 		session[LOGIN]=TRUE
