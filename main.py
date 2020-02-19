@@ -46,7 +46,7 @@ def adminportal():
 		p1 = escape(request.form['p1'])
 		p2 = escape (request.form ['p2'])
 		w = escape(request.form ['w'])
-		#remove trailing whitespaces
+		#remove trailing whitespaces, and convert case to lower
 		p1 = clean (p1)
 		p2 = clean (p2)
 		w = clean (w)
@@ -69,6 +69,7 @@ def viewraces():
 	name_filter = clean(escape(request.args ['player']))
 	begin = escape(request.args['begin'])
 	end = escape(request.args['end'])
+	#if field was left blank, intentionally then we don't need to process that for range
 	if begin == '':
 		begin = 0
 	else:
@@ -77,9 +78,13 @@ def viewraces():
 		end = sys.maxsize
 	else:
 		end = int (end)
+	if (begin > end):
+		return render_template ("viewraces.html", msg="Incorrect range, please try again")
 	if name_filter == '':
+		#query all races within the range given
 		races = Race.query.filter(Race.uid >= begin, Race.uid <=end)
 	else:
+		#query all races featuring player, within the range given
 		races = Race.query.filter(((Race.p1==name_filter) | (Race.p2==name_filter )) , Race.uid >= begin , Race.uid <=end)
 	if (races.count()==0):
 		return render_template ("viewraces.html", msg = "No results")
@@ -105,28 +110,6 @@ def currentstandings():
 	else: #sort based on ascending
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
 		return render_template ("currentstandings.html", dict = sorted_d)
-
-"""
-#view current standings in asc/desc order as specified in argument in url
-@app.route ("/currentstandings")
-def currentstandings():
-	order = request.args['sort']
-	races = Race.query.all() #details of all races
-	#create a dict to calculate who won how many races
-	dict={}
-	for r in races:
-		if r.w not in dict:
-			dict[r.w]=1
-		else:
-			dict[r.w]=dict[r.w]+1
-	#sort based on no of games won descending, the no of games won will be value in key-value pair in dict
-	if (order == None) or (order == 'desc'):
-		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1], reverse=True)}
-		return render_template ("currentstandings.html", dict = sorted_d)
-	else:
-		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
-		return render_template ("currentstandings.html", dict = sorted_d)
-"""
 
 #index, runs on localhost:5000
 @app.route ('/')

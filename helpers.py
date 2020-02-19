@@ -39,5 +39,6 @@ def updateWinCount(w):
 def clean (str):
     if str != '':
         str = str.split()[0]
+        str = str.lower()
         #str = re.sub(r'[^a-zA-Z ]', '', str)
     return str
