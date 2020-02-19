@@ -43,13 +43,13 @@ def add ():
 @app.route('/adminportal/', methods = ['POST'])
 def adminportal():
 	if isLoggedIn():
-		p1 = request.form['p1']
-		p2 = request.form ['p2']
-		w = request.form ['w']
+		p1 = escape(request.form['p1'])
+		p2 = escape (request.form ['p2'])
+		w = escape(request.form ['w'])
 		#remove trailing whitespaces
-		p1 = p1.split ()[0]
-		p2 = p2.split ()[0]
-		w = w.split ()[0]
+		p1 = clean (p1)
+		p2 = clean (p2)
+		w = clean (w)
 		#check for valid data
 		if validateData (p1, p2, w)==True:
 			db.session.add (Race(p1, p2, w))
@@ -59,25 +59,37 @@ def adminportal():
 			updateWinCount (w)
 			return render_template ("index.html", msg = "Race added")
 		else:
-			return render_template ("addrace.html", msg="Incorrect values, try again")
+			return render_template ("addrace.html", msg="Incorrect values, try again", p1 = p1, p2 = p2, w= w)
 	else:
 		return render_template ("adminlogin.html", msg = "Please login as admin")
 
 #for everyone to view races, players, winners
 @app.route ('/viewraces/')
 def viewraces():
-	name_filter = request.args ['player']
-	if name_filter == '':
-		races = Race.query.all()
+	name_filter = clean(escape(request.args ['player']))
+	begin = escape(request.args['begin'])
+	end = escape(request.args['end'])
+	if begin == '':
+		begin = 0
 	else:
-		races = Race.query.filter((Race.p1==name_filter) | (Race.p2==name_filter ))
+		begin = int (begin)
+	if end =='':
+		end = sys.maxsize
+	else:
+		end = int (end)
+	if name_filter == '':
+		races = Race.query.filter(Race.uid >= begin, Race.uid <=end)
+	else:
+		races = Race.query.filter(((Race.p1==name_filter) | (Race.p2==name_filter )) , Race.uid >= begin , Race.uid <=end)
+	if (races.count()==0):
+		return render_template ("viewraces.html", msg = "No results")
 	return render_template ("viewraces.html", races=races)
 
 #view current standings 
 @app.route ("/currentstandings/")
 def currentstandings():
 	order = request.args['AscOrDesc']
-	name_filter = request.args ['player']
+	name_filter = clean(escape(request.args ['player']))
 	if name_filter == "":
 		players = Player.query.all() #details of all players
 	else:
@@ -87,7 +99,7 @@ def currentstandings():
 	for p in players:
 		dict[p.name]=p.wins
 	#sort based on no of games won descending, the no of games won will be value in key-value pair in dict
-	if (order == None) or (order == 'desc'):
+	if (order == None) or (order == DESC):
 		sorted_d = {k: v for k, v in sorted(dict.items(), key=lambda item: item[1], reverse=True)}
 		return render_template ("currentstandings.html", dict = sorted_d)
 	else: #sort based on ascending

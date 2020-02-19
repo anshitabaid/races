@@ -8,12 +8,14 @@ def isLoggedIn():
     return False
 
 def validateData(p1, p2, w):
+    if p1 =='' or p2 =='' or w=='':
+        return False
     #check if winner name doesnt match any player's name
     if (p1!=w and p2!=w): 
         return False
 
     #names should only be numberic or contain spaces
-    regex = r'([a-zA-Z]*( )?)*'
+    regex = r'([a-zA-Z]+( )?)*'
     if re.match (regex, p1).group(0)!=p1 or re.search (regex, p2).group(0)!=p2:
         return False
     
@@ -32,3 +34,10 @@ def updateWinCount(w):
     player.wins+=1
     db.session.add (player)
     db.session.commit ()
+
+#to clean the input string
+def clean (str):
+    if str != '':
+        str = str.split()[0]
+        #str = re.sub(r'[^a-zA-Z ]', '', str)
+    return str

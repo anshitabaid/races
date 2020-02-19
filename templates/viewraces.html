@@ -4,8 +4,10 @@
 </head>
 <body>
     <form action = "http://localhost:5000/viewraces" method = 'GET'>
-        <b>Filters</b><br>
-        Featuring player(leave blank if optional):&nbsp<input type = "text" name = "player"><br>
+        <b>Filters (leave blank if optional)</b><br>
+        Featuring player :&nbsp<input type = "text" name = "player"><br>
+        Begin from: <input type = "number" name = "begin"> <br>
+        End at: <input type = "number" name = "end">
         <input type = "submit" value = "reload">
 
     </form>
@@ -27,7 +29,7 @@
         </TR>
     {% endfor %}
     </table>
-<br><br>
+<br>{{msg}}<br>
     
     <br><a href="http://localhost:5000/">Home</a> <br>
 </body>
